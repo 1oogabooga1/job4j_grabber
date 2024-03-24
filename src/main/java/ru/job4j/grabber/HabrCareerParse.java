@@ -14,31 +14,11 @@ import java.util.List;
 public class HabrCareerParse implements Parse {
 
     private static final String SOURCE_LINK = "https://career.habr.com";
-    public static final String PREFIX = "/vacancies?page=";
-    public static final String SUFFIX = "&q=Java%20developer&type=all";
 
     private final DateTimeParser dateTimeParser;
 
     public HabrCareerParse(DateTimeParser dateTimeParser) {
         this.dateTimeParser = dateTimeParser;
-    }
-
-    public static void main(String[] args) throws IOException {
-        for (int i = 1; i < 6; i++) {
-            String fullLink = "%s%s%s%s".formatted(SOURCE_LINK, PREFIX, i, SUFFIX);
-            Connection connection = Jsoup.connect(fullLink);
-            Document document = connection.get();
-            Elements rows = document.select(".vacancy-card__inner");
-            rows.forEach(row -> {
-                Element titleElement = row.select(".vacancy-card__title").first();
-                Element linkElement = titleElement.child(0);
-                Element dateElement = row.select(".vacancy-card__date").first();
-                String vacancyName = titleElement.text();
-                String link = String.format("%s%s", SOURCE_LINK, linkElement.attr("href"));
-                String date = dateElement.child(0).attr("datetime");
-                System.out.printf(" %s %s%n %s", vacancyName, link, date);
-            });
-        }
     }
 
     private String retrieveDescription(String link) throws IOException {
