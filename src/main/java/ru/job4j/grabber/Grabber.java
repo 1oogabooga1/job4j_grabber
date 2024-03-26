@@ -71,8 +71,9 @@ public class Grabber implements Grab {
                         try (OutputStream out = socket.getOutputStream()) {
                             out.write("HTTP/1.1 200 OK\r\n\r\n".getBytes());
                             for (Post post : store.getAll()) {
-                                out.write(post.toString().getBytes(Charset.forName("Windows-1251")));
-                                out.write(System.lineSeparator().getBytes());
+                                String output = String.format("ID: %s%nTitle: %s%nDescription: %s%nLink: %s%nCreated: %s%n%n",
+                                        post.getId(), post.getTitle(), post.getDescription(), post.getLink(), post.getCreated());
+                                out.write(output.getBytes(Charset.forName("Windows-1251")));
                             }
                         } catch (IOException io) {
                             io.printStackTrace();
