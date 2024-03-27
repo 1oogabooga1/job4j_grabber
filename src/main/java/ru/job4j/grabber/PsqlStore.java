@@ -22,7 +22,7 @@ public class PsqlStore implements Store {
     }
 
     private Post createPost(int id, String title, String link, String description, LocalDateTime created) {
-        return new Post(id, title, link, description, created);
+        return new Post(id, title, description, link, created);
     }
 
     @Override
