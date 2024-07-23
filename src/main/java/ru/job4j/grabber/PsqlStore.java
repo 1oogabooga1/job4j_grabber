@@ -1,7 +1,6 @@
 package ru.job4j.grabber;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -21,8 +20,8 @@ public class PsqlStore implements Store {
                 config.getProperty("password"));
     }
 
-    private Post createPost(int id, String title, String link, String description, LocalDateTime created) {
-        return new Post(id, title, description, link, created);
+    private Post createPost(ResultSet rsl) throws SQLException {
+        return new Post(rsl);
     }
 
     @Override
@@ -45,10 +44,7 @@ public class PsqlStore implements Store {
         try (Statement statement = connection.createStatement()) {
             ResultSet result = statement.executeQuery("SELECT * FROM post");
             while (result.next()) {
-                allPosts.add(createPost(result.getInt(1), result.getString(2),
-                        result.getString(3),
-                        result.getString(4),
-                        result.getTimestamp(5).toLocalDateTime()));
+                allPosts.add(createPost(result));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -60,11 +56,7 @@ public class PsqlStore implements Store {
     public Post findById(int id) {
         try (Statement statement = connection.createStatement()) {
             ResultSet rsl = statement.executeQuery(String.format("SELECT * FROM post WHERE id = %s", id));
-            return createPost(rsl.getInt(1),
-                    rsl.getString(2),
-                    rsl.getString(3),
-                    rsl.getString(4),
-                    rsl.getTimestamp(5).toLocalDateTime());
+            return createPost(rsl);
         } catch (Exception e) {
             e.printStackTrace();
         }
